@@ -1,0 +1,61 @@
+
+.slick-prev:before,
+.slick-next:before {
+    font-family: 'slick';
+    font-size: 30px !important;
+    line-height: 1 ;
+    color: black !important;
+
+    -webkit-font-smoothing: antialiased ;
+    -moz-osx-font-smoothing: grayscale ;
+}
+
+.slick-prev:before {
+    content: '\276E' !important;
+}
+
+.slick-next:before {
+    content: '\276F' !important;
+}
+.slick-prev {
+    left: -4% !important ;
+}
+
+.slick-next {
+    right: -4%  !important;
+}
+
+.slick-slide {
+    display: none ;
+    float: left ;
+    padding: 10px ;
+    height: 100% ;
+    min-height: 1px ;
+}
+
+@media (max-width: 480px) {
+    .slick-prev {
+        left: 8% !important;
+        top: -65px !important;
+        display: none !important;
+    }
+
+    .slick-next {
+        right: 8% !important;
+        top: -65px !important;
+        display: none !important;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .slick-prev {
+        left: 25% !important;
+        top: -38px !important;
+        display: none !important;
+    }
+    .slick-next {
+        right: 25% !important;
+        top: -38px !important;
+        display: none !important;
+    }
+}
