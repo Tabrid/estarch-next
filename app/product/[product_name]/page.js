@@ -57,24 +57,24 @@ const ProductDetails = () => {
 
     // Push the product view event to the dataLayer
     window.dataLayer.push({
-      event: "product_view",
+      event: "view_item",
       ecommerce: {
+        currency: "BDT",
+        value: product.salePrice || 0,
         items: [{
-          item_name: product?.productName || "undefined",  // Name or ID is required.
-          product_id: product.SKU || "undefined",
-          price: product.salePrice || "undefined",
-          item_brand: product.selectedBrand || "",  // Optional chaining for brand name.
-          item_category: product.selectedCategoryName || "",  // Using optional chaining for categories.
-          item_variant: "",  // If applicable.
-          item_list_name: "",  // Optional, if associated with a list.
-          item_list_id: "",  // Optional, if associated with a list.
-          index: 0,  // Optional, if associated with a list.
-          quantity: 1 , // Default to 1 if quantity is not provided.
-          currency:'BDT'
+          item_id: product.SKU || "undefined",
+          item_name: product.productName || "undefined",
+          discount: product.discount || 0,
+          index: 0,
+          item_brand: product.selectedBrand || "Brand Unknown",
+          item_category: product.selectedCategoryName || "Category Unknown",
+          price: product.salePrice || 0,
+          quantity: 1,
         }]
       }
     });
   }, [product]);
+
 
   const handleAddToCart = () => {
     if (selectedSize) {
@@ -100,18 +100,17 @@ const ProductDetails = () => {
       window.dataLayer.push({
         event: "add_to_cart",
         ecommerce: {
+          currency: "BDT",
+          value: product.salePrice || 0,
           items: [{
-            item_name: product?.productName || "undefined",
-            product_id: product?.SKU || "undefined",
-            price: product?.salePrice || 0,
-            item_brand: product.selectedBrand || "",
-            item_category: product.selectedCategoryName || "",
-            item_variant: "",
-            item_list_name: "",
-            item_list_id: "",
+            item_id: product.SKU || "undefined",
+            item_name: product.productName || "undefined",
+            discount: product.discount || 0,
             index: 0,
-            quantity: quantity || 1,
-            currency:'BDT'
+            item_brand: product.selectedBrand || "Brand Unknown",
+            item_category: product.selectedCategoryName || "Category Unknown",
+            price: product.salePrice || 0,
+            quantity: 1,
           }]
         }
       });

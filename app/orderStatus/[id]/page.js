@@ -32,40 +32,42 @@ export default function OrderStatus() {
 
     fetchOrder();
   }, [id]);
-  
+
   useEffect(() => {
     if (typeof window === 'undefined' || typeof document === 'undefined') return;
     if (!order) return;
+
     // Clear the previous ecommerce object
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({ ecommerce: null });
 
-    const items = order.cartItems.map(product => ({
-      item_name: product.title || "undefined",  // Product name
-      product_id: product.SKU || "undefined",  // Product ID
-      price: product.price || 0,  // Product price
-      item_brand: product.productId?.selectedBrand || "",  // Brand name
-      item_category: product.productId?.selectedCategoryName || "",  // First category
-      item_variant: "",  // If applicable
-      quantity: product.quantity || 1  // Quantity of the product
+    const items = order.cartItems.map((product, index) => ({
+      item_id: product.SKU || "undefined", // Product SKU
+      item_name: product.title || "undefined", // Product name
+      discount: product.discount || 0, // Discount on the product
+      index, // Index of the item in the list
+      item_brand: product.productId?.selectedBrand || "unknown", // Brand name
+      item_category: product.productId?.selectedCategoryName || "General", // Category hierarchy
+      item_variant: product.size || "", 
+      price: product.price || 0, // Price of the product
+      quantity: product.quantity || 1 // Quantity of the product
     }));
-    // Push purchase event to the dataLayer
+
+    // Push the purchase event to the dataLayer
     window.dataLayer.push({
       event: "purchase",
       ecommerce: {
-        transaction_id: order.invoice || '',  // Custom function to get the order code
-        affiliation: "ESTARCH",  // Store name or affiliation
-        value: order.grandTotal || 0,  // Total order value
-        tax: 0,  // Tax amount
-        shipping: order.deliveryCharge || 0,  // Shipping cost
-        currency:'BDT',  // Currency code
-        coupon: "",  // Coupon code, if applicable
-        items: items  // Items purchased in the order
+        transaction_id: order.invoice || "T_UNKNOWN", // Transaction/Invoice ID
+        affiliation: "ESTARCH", // Store name
+        value: order.grandTotal || 0, // Total order value (sum of price*quantity minus discounts)
+        tax:  0, // Tax amount
+        shipping: order.deliveryCharge || 0, // Shipping cost
+        currency: 'BDT', // Currency code
+        items: items // Purchased items
       }
     });
-
-
   }, [order]);
+
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;

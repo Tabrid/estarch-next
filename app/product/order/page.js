@@ -111,33 +111,32 @@ export default function Checkout() {
     // Clear the previous ecommerce object
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({ ecommerce: null });
-    // Prepare items array from cart
-    const items = cartItems.map(product => {
 
-      return {
-        item_name: product.product.title|| "undefined",  // Product name
-        product_id: product.product.sku|| "undefined",  // Product ID
-        price: product.product.price|| 0,  // Product price
-        item_brand:  "",  // Brand name (from products)
-        item_category:  "",  // First categoryy
-        item_variant: product.size,  // Variant if available
-        item_list_name: "",  // If associated with a list
-        item_list_id: "",  // If associated with a list
-        index: 0,  // Optional for list index
-        quantity: product.quantity || 1 , // Quantity in cart
-        currency:'BDT'
-      };
-    });
+    // Prepare items array from cart
+    const items = cartItems.map((product, index) => ({
+      item_name: product.product.title || "undefined",  
+      item_id: product.product.sku || "undefined",     
+      price: product.product.price || 0,               
+      item_brand: "",                                   
+      item_category: "",                                
+      item_variant: product.size || "",                 
+      quantity: product.quantity || 1,                 
+      currency: "BDT",                                  
+      index: index                                      
+    }));
+    const totalValue = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     // Push the begin_checkout event to the dataLayer
     window.dataLayer.push({
-      event: "checkout",
+      event: "begin_checkout",
       ecommerce: {
-        items: items  // Items from the cart
+        currency: "BDT",
+        value: totalValue,                    
+        items: items              
       }
     });
-
   }, [cartItems]);
+
 
   return (
     <div className="container mx-auto py-10 px-4">

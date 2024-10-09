@@ -52,18 +52,17 @@ const ProductModal = () => {
       window.dataLayer.push({
         event: "add_to_cart",
         ecommerce: {
+          currency: "BDT",
+          value: selectedProduct?.salePrice || 0,
           items: [{
+            item_id: selectedProduct?.SKU || "undefined",
             item_name: selectedProduct?.productName || "undefined",
-            product_id: selectedProduct?.SKU || "undefined",
-            price: selectedProduct?.salePrice || 0,
-            item_brand: selectedProduct.selectedBrand || "",
-            item_category: selectedProduct.selectedCategoryName || "",
-            item_variant: "",
-            item_list_name: "",
-            item_list_id: "",
+            discount: selectedProduct?.discount || 0,
             index: 0,
-            quantity: quantity || 1,
-            currency:'BDT'
+            item_brand: selectedProduct?.selectedBrand || "Brand Unknown",
+            item_category: selectedProduct?.selectedCategoryName || "Category Unknown",
+            price: selectedProduct?.salePrice || 0,
+            quantity: 1,
           }]
         }
       });

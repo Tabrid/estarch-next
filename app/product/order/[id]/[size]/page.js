@@ -32,6 +32,8 @@ export default function Checkout() {
             try {
                 const response = await axios.get(`${baseUrl}/api/products/products/product/${id}`);
                 const fetchedProduct = response.data;
+                console.log(fetchedProduct);
+
                 setProduct(fetchedProduct);
             } catch (error) {
                 console.error("Error fetching product details:", error);
@@ -111,38 +113,41 @@ export default function Checkout() {
     };
     useEffect(() => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return;
-        const  cartItems = [{
+        const cartItems = [{
             title: product?.productName,
             price: product?.salePrice,
             quantity: quantity,
             size: size,
-            sku:product?.SKU
-        }]
-        const items = cartItems.map(product => {
+            sku: product?.SKU,
+            brand: product?.selectedBrand,
+            category: product?.selectedCategoryName
 
-            return {
-              item_name: product.title|| "undefined",  
-              product_id: product.sku|| "undefined", 
-              price: product.price|| 0,  
-              item_brand:  "",  
-              item_category:  "",  
-              item_variant: product.size,  
-              item_list_name: "",  
-              item_list_id: "",  
-              index: 0,  
-              quantity: product.quantity || 1,
-              currency:'BDT'
-            };
-          });
-      
-          window.dataLayer.push({
-            event: "checkout",
+        }]
+        // Prepare items array from cart
+        const items = cartItems.map((product, index) => ({
+            item_name: product.title || "undefined",
+            item_id: product.sku || "undefined",
+            price: product.price || 0,
+            item_brand: product.brand,
+            item_category: product.category,
+            item_variant: product.size || "",
+            quantity: product.quantity || 1,
+            currency: "BDT",
+            index: index
+        }));
+        const totalValue = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        // Push the begin_checkout event to the dataLayer
+        window.dataLayer.push({
+            event: "begin_checkout",
             ecommerce: {
-              items: items 
+                currency: "BDT",
+                value: totalValue,
+                items: items
             }
-          });
-      
-    }, []);
+        });
+
+    }, [product , size , quantity]);
     return (
         <div className="container mx-auto py-10 px-4">
             <div className="flex flex-col md:flex-row gap-6">
