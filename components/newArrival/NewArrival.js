@@ -87,7 +87,9 @@ export default function NewArrival() {
   const truncateText = (text, maxLength) => {
     return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
   };
-
+  const navigateToPage = (url) => {
+    window.location.href = url; 
+  };
   return (
     <div>
       <div className="slider-container mx-0 lg:mx-20">
@@ -102,7 +104,7 @@ export default function NewArrival() {
             ))
             : products.map((product, index) => (
               <div key={product?._id} className="card bg-base-100 shadow-md rounded-none">
-                <Link href={`/product/${product?.productName}?sku=${product?.SKU}`}>
+                <div className='cursor-pointer' onClick={() => navigateToPage(`/product/${product?.productName}?sku=${product?.SKU}`)} >
                   <div>
                     <figure className='relative'>
                       <Image
@@ -143,7 +145,7 @@ export default function NewArrival() {
                       </div>
                     </div>
                   </div>
-                </Link>
+                </div>
                 <div className='text-center'>
                   <button onClick={() => dispatch(openProductModal(product))} className=" bg-[#1E201E] text-white w-full py-2">BUY NOW</button>
                 </div>

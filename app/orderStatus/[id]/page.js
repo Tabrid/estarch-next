@@ -6,13 +6,16 @@ import Image from 'next/image';
 import truck from '../../../public/images/delivery-truck-box-Av8vKM7-600.jpg';
 import baseUrl from '@/components/services/baseUrl';
 import Link from 'next/link';
+import crypto from 'crypto';
 
 export default function OrderStatus() {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const hashData = (data) => {
+    return crypto.createHash('sha256').update(data).digest('hex');
+  };
   useEffect(() => {
     const fetchOrder = async () => {
       try {
@@ -48,7 +51,7 @@ export default function OrderStatus() {
       index, // Index of the item in the list
       item_brand: product.productId?.selectedBrand || "unknown", // Brand name
       item_category: product.productId?.selectedCategoryName || "General", // Category hierarchy
-      item_variant: product.size || "", 
+      item_variant: product.size || "",
       price: product.price || 0, // Price of the product
       quantity: product.quantity || 1 // Quantity of the product
     }));
@@ -56,11 +59,19 @@ export default function OrderStatus() {
     // Push the purchase event to the dataLayer
     window.dataLayer.push({
       event: "purchase",
+      customers: {
+        name: order.name,
+        name_hash: hashData(order.name),
+        phone: order.phone,
+        phone_hash:hashData(order.phone),
+        address: order.address,
+        address_hash: hashData(order.address)
+      },
       ecommerce: {
         transaction_id: order.invoice || "T_UNKNOWN", // Transaction/Invoice ID
         affiliation: "ESTARCH", // Store name
         value: order.grandTotal || 0, // Total order value (sum of price*quantity minus discounts)
-        tax:  0, // Tax amount
+        tax: 0, // Tax amount
         shipping: order.deliveryCharge || 0, // Shipping cost
         currency: 'BDT', // Currency code
         items: items // Purchased items

@@ -95,11 +95,13 @@ export default function ExtraSection1() {
 
     const truncateText = (text, maxLength) => {
         return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
-      };
+    };
 
-
+    const navigateToPage = (url) => {
+        window.location.href = url;
+    };
     return (
-        <div className={`${products.length < 1 ? 'hidden': ''}`}>
+        <div className={`${products.length < 1 ? 'hidden' : ''}`}>
             <div className="slider-container mx-0 lg:mx-20">
                 <h1 className='text-center mt-8 font-bold md:text-2xl lg:text-2xl text-lg uppercase'>{extraSection?.name1} Section</h1>
                 <div className='text-center mb-4'>
@@ -112,59 +114,59 @@ export default function ExtraSection1() {
                 </div>
                 <Slider {...settings}>
                     {products.map((product, index) => (
-                       <div
-                       key={product._id}
-                       className="card card-compact bg-base-200 shadow-none  rounded-none relative border-2 border-base-200 hover:border-blue-300"
-                   >
-                       <Link href={`/product/${product?.productName}?sku=${product?.SKU}`}>
-                           <figure>
-                           <Image
-                        src={`${baseUrl}/${product.images[0]}`}
-                        width={320}
-                        height={400}
-                        priority={index === 0}
-                        alt={product.productName}
-                        sizes='(max-width: 640px) 60vw, (max-width: 768px) 60vw, (max-width: 1024px) 800vw, 100vw'
-                      />
-                           </figure>
-                           <div className="pt-1 lg:px-6 px-2">
-                               <h2 className="md:text-[15px] text-[12px] font-bold text-center whitespace-nowrap overflow-hidden text-ellipsis">
-                                   {truncateText(product.productName, product.productName.length)}
-                               </h2>
-                               <div className='text-center'>
-                                   <div className="">
-                                       <p className={`bg-black text-white text-sm md:text-[14px] mt-2 md:mx-14 mx-6 ${product.regularPrice - product.salePrice > 0 ? 'visible' : 'invisible'}`}>
-                                           Save Tk. {product.regularPrice - product.salePrice}
-                                       </p>
-                                       {
-                                           product.regularPrice - product.salePrice > 0 && (
-                                               <p className='my-1 text-[16px] md:text-[20px] text-black text-center '>
-                                                   <span>TK.</span>{product.salePrice}
-                                                   <span className='md:text-[17px] text-sm line-through text-red-500'> Tk.{product.regularPrice}</span>
-                                               </p>
-                                           )
-                                       }
-                                   </div>
+                        <div
+                            key={product._id}
+                            className="card card-compact bg-base-200 shadow-none  rounded-none relative border-2 border-base-200 hover:border-blue-300"
+                        >
+                            <div  className='cursor-pointer' onClick={() => navigateToPage(`/product/${product?.productName}?sku=${product?.SKU}`)}>
+                                <figure>
+                                    <Image
+                                        src={`${baseUrl}/${product.images[0]}`}
+                                        width={320}
+                                        height={400}
+                                        priority={index === 0}
+                                        alt={product.productName}
+                                        sizes='(max-width: 640px) 60vw, (max-width: 768px) 60vw, (max-width: 1024px) 800vw, 100vw'
+                                    />
+                                </figure>
+                                <div className="pt-1 lg:px-6 px-2">
+                                    <h2 className="md:text-[15px] text-[12px] font-bold text-center whitespace-nowrap overflow-hidden text-ellipsis">
+                                        {truncateText(product.productName, product.productName.length)}
+                                    </h2>
+                                    <div className='text-center'>
+                                        <div className="">
+                                            <p className={`bg-black text-white text-sm md:text-[14px] mt-2 md:mx-14 mx-6 ${product.regularPrice - product.salePrice > 0 ? 'visible' : 'invisible'}`}>
+                                                Save Tk. {product.regularPrice - product.salePrice}
+                                            </p>
+                                            {
+                                                product.regularPrice - product.salePrice > 0 && (
+                                                    <p className='my-1 text-[16px] md:text-[20px] text-black text-center '>
+                                                        <span>TK.</span>{product.salePrice}
+                                                        <span className='md:text-[17px] text-sm line-through text-red-500'> Tk.{product.regularPrice}</span>
+                                                    </p>
+                                                )
+                                            }
+                                        </div>
 
-                                   {product.regularPrice - product.salePrice <= 0 && (
-                                       <p className='my-1 text-[17px] md:text-[20px] text-black text-center bottom-8 md:bottom-10 left-14 md:left-[110px]'>
-                                           <span className=''>TK.</span>{product.salePrice}
-                                       </p>
-                                   )}
-                               </div>
-                           </div>
-                       </Link>
-                       <div className='text-center shadow-lg  w-full bottom-0'>
+                                        {product.regularPrice - product.salePrice <= 0 && (
+                                            <p className='my-1 text-[17px] md:text-[20px] text-black text-center bottom-8 md:bottom-10 left-14 md:left-[110px]'>
+                                                <span className=''>TK.</span>{product.salePrice}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='text-center shadow-lg  w-full bottom-0'>
 
-                           <button onClick={() => dispatch(openProductModal(product))} className=" bg-[#1E201E] text-white w-full md:py-2 py-1">BUY NOW</button>
+                                <button onClick={() => dispatch(openProductModal(product))} className=" bg-[#1E201E] text-white w-full md:py-2 py-1">BUY NOW</button>
 
-                       </div>
-                   </div>
+                            </div>
+                        </div>
                     ))}
                 </Slider>
                 <ProductModal />
             </div>
-          
+
         </div>
     )
 }

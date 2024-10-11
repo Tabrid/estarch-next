@@ -26,6 +26,11 @@ const SlideCard = () => {
     dispatch(closeCardSlide());
     document.body.style.overflow = isOpen ? "auto" : "hidden";
   };
+  const handleContinue = () => {
+    dispatch(closeCardSlide());
+    document.body.style.overflow = isOpen ? "auto" : "hidden";
+    window.location.href = "/product/order"
+  };
 
   const handleDecrease = (id) => {
     dispatch(decreaseQuantity(id));
@@ -45,46 +50,7 @@ const SlideCard = () => {
       0
     );
   };
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof document === 'undefined') return;
-  
-    // Extract Facebook cookies
-    const fbc = document.cookie.split('; ').find(row => row.startsWith('_fbc='))?.split('=')[1];
-    const fbp = document.cookie.split('; ').find(row => row.startsWith('_fbp='))?.split('=')[1];
-  
-    // Prepare cart items with only the necessary fields
-    const simplifiedCartItems = cartItems.map(item => ({
-      title: item.product.title,
-      sku: item.product.sku,
-      size: item.size,
-      value: item.product.price,
-      quantity: item.quantity
-    }));
-  
-    // Format the cart items into a more organized structure for display
-    const formattedCartItems = simplifiedCartItems.map(item => `
-      Title: ${item.title}
-      SKU: ${item.sku}
-      Size: ${item.size}
-      Price: ${item.value} BDT
-      Quantity: ${item.quantity}
-    `).join('\n-------------------\n');  // Join each item with a separator for clarity
-  
-    if (typeof fbq === 'function' && isOpen) {
-      fbq('track', 'cart_view', {
-        content_type: 'product',
-        currency: 'BDT',
-        fbc: fbc || 'not_available',
-        fbp: fbp || 'not_available',
-        cartItems: formattedCartItems, // Use formatted cart items here
-        first_party_collection: true,
-      });
-    } else {
-      console.error('Facebook Pixel is not loaded.');
-    }
-  
-  }, [cartItems]); // Add cartItems as a dependency so the effect runs when cart items change
-   // Add cartItems as a dependency so the effect runs when cart items change
+
   
   return (
     <div
@@ -164,14 +130,12 @@ const SlideCard = () => {
               <h1 className="font-bold text-xl">{calculateSubtotal()} tk</h1>
             </div>
 
-            <Link href="/product/order">
               <button
-                onClick={handleSlideCard}
+                onClick={handleContinue}
                 className="btn bg-black text-white w-full hover:bg-black"
               >
                 Place Order
               </button>
-            </Link>
           </div>
         </div>
       ) : (

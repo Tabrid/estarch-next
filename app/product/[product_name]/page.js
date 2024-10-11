@@ -31,6 +31,7 @@ const ProductDetails = () => {
   const router = useRouter();
   useEffect(() => {
     const fetchProduct = async () => {
+      
       try {
         const response = await axios.get(`${baseUrl}/api/products/products/product-details/${encodeURIComponent(product_name)}/${sku}`);
         setProduct(response.data);
@@ -38,6 +39,7 @@ const ProductDetails = () => {
         // if (response.data.selectedSizes.length > 0) {
         //   setSelectedSize(response.data.selectedSizes[0]);
         // }
+       
       } catch (error) {
         console.error("Error fetching product details:", error);
       }
@@ -49,7 +51,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (typeof window === 'undefined' || typeof document === 'undefined') return;
-    if (!product) return;
+    if (!product || !product_name || !sku) return;
 
     // Clear the previous ecommerce object
     window.dataLayer = window.dataLayer || [];
@@ -73,7 +75,7 @@ const ProductDetails = () => {
         }]
       }
     });
-  }, [product]);
+  }, [product, product_name, sku]);
 
 
   const handleAddToCart = () => {
@@ -162,7 +164,6 @@ const ProductDetails = () => {
 
 
 
-
   return (
     <div className="container mx-auto p-4">
       <div className="breadcrumbs text-xs md:text-sm md:my-6 my-3 md:pl-8 pl-2">
@@ -235,7 +236,7 @@ const ProductDetails = () => {
             <div className="flex gap-1 items-center">
               <p className="text-sm font-bold">Select Size :</p>
               <div className='w-48 h-[40px] rounded-md flex justify-between '>
-                <p className="flex gap-2 items-center" onClick={() => dispatch(openSize(product?.charts))}>
+                <p className="flex gap-2 items-center cursor-pointer" onClick={() => dispatch(openSize(product?.charts))}>
                   (<PiCoatHanger /> Size guide )
                 </p>
               </div>

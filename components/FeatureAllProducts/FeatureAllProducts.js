@@ -136,7 +136,9 @@ const FeatureAllProducts = () => {
     };
 
 
-
+    const navigateToPage = (url) => {
+        window.location.href = url;
+    };
 
     return (
         <div className="mx-4 lg:mx-12 mt-5 mb-8">
@@ -207,7 +209,7 @@ const FeatureAllProducts = () => {
                                 key={product._id}
                                 className="card card-compact bg-base-200 shadow-lg rounded-none relative border-2 border-base-200 hover:border-blue-300"
                             >
-                                <Link href={`/product/${product?.productName}?sku=${product?.SKU}`}>
+                                <div className='cursor-pointer' onClick={() => navigateToPage(`/product/${product?.productName}?sku=${product?.SKU}`)}>
                                     <figure>
                                         <Image sizes="30vw" src={`${baseUrl}/${product.images[0]}`} alt={product.productName} width={350}
                                             height={400} />
@@ -238,7 +240,7 @@ const FeatureAllProducts = () => {
                                             )}
                                         </div>
                                     </div>
-                                </Link>
+                                </div>
                                 <div className='text-center shadow-lg  w-full bottom-0'>
 
                                     <button onClick={() => dispatch(openProductModal(product))} className=" bg-[#1E201E] text-white w-full md:py-2 py-1">BUY NOW</button>

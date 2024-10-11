@@ -127,7 +127,9 @@ export default function ExtraSection3() {
     const truncateText = (text, maxLength) => {
         return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
     };
-
+    const navigateToPage = (url) => {
+        window.location.href = url;
+    };
     return (
         <div className={`${products.length < 1 ? 'hidden' : ''}`}>
             <div className="slider-container mx-0 lg:mx-20">
@@ -153,7 +155,7 @@ export default function ExtraSection3() {
                                 key={product._id}
                                 className="card card-compact bg-base-200 shadow-none rounded-none relative border-2 border-base-200 hover:border-blue-300"
                             >
-                                <Link href={`/product/${product?.productName}?sku=${product?.SKU}`}>
+                                <div className='cursor-pointer' onClick={() => navigateToPage(`/product/${product?.productName}?sku=${product?.SKU}`)}>
                                     <figure>
                                         <Image
                                             src={`${baseUrl}/${product.images[0]}`}
@@ -190,7 +192,7 @@ export default function ExtraSection3() {
                                             )}
                                         </div>
                                     </div>
-                                </Link>
+                                </div>
                                 <div className='text-center shadow-lg  w-full bottom-0'>
 
                                     <button onClick={() => dispatch(openProductModal(product))} className=" bg-[#1E201E] text-white w-full md:py-2 py-1">BUY NOW</button>

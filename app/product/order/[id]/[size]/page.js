@@ -6,6 +6,7 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import baseUrl from '@/components/services/baseUrl';
 import cod from '../../../../../public/images/cash-on-delivery-icon.png';
+import bkash from '../../../../../public/images/bkash.png';
 import { AuthContext } from '@/components/context/AuthProvider';
 
 export default function Checkout() {
@@ -113,6 +114,9 @@ export default function Checkout() {
     };
     useEffect(() => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return;
+        if (!product) return;
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ ecommerce: null });
         const cartItems = [{
             title: product?.productName,
             price: product?.salePrice,
@@ -147,7 +151,7 @@ export default function Checkout() {
             }
         });
 
-    }, [product , size , quantity]);
+    }, [product ,id , size , quantity]);
     return (
         <div className="container mx-auto py-10 px-4">
             <div className="flex flex-col md:flex-row gap-6">
@@ -247,7 +251,19 @@ export default function Checkout() {
                         <div className="mb-4">
                             <label className="block text-sm font-bold mb-2">Payment Method:</label>
                             <div className="mb-2">
-                                <label className="inline-flex items-center">
+                                <label className="inline-flex space-x-3 items-center">
+                                    <input
+                                        className='radio checked:bg-red-500'
+                                        type="radio"
+                                        name="paymentMethod"
+                                        value="bkash"
+                                        onChange={handleChange}
+                                        required
+                                        defaultChecked
+                                    />
+                                    <div className='flex items-center gap-3 ml-2'>
+                                        <Image src={bkash} alt='bkash' width={80} height={40} />
+                                    </div>
                                     <input
                                         className='radio checked:bg-red-500'
                                         type="radio"
@@ -258,7 +274,6 @@ export default function Checkout() {
                                         defaultChecked
                                     />
                                     <div className='flex items-center gap-3 ml-2'>
-                                        <span>Cash on delivery</span>
                                         <Image src={cod} alt='Cash on delivery' width={80} height={40} />
                                     </div>
                                 </label>

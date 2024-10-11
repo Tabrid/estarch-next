@@ -126,7 +126,6 @@ export default function Checkout() {
     }));
     const totalValue = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    // Push the begin_checkout event to the dataLayer
     window.dataLayer.push({
       event: "begin_checkout",
       ecommerce: {
@@ -135,7 +134,7 @@ export default function Checkout() {
         items: items              
       }
     });
-  }, [cartItems]);
+  }, []);
 
 
   return (
@@ -277,7 +276,7 @@ export default function Checkout() {
                   <div className='lg:col-span-3 place-self-end text-end'>
                     <p className='line-through text-red-500'>৳ {item.product.discount + item.product.price}</p>
                     <span className=''>৳ {item.product.price}</span>
-                    <button onClick={() => handleRemoveItem(item.id)} className=" flex items-center justify-center underline">Remove</button>
+                    <button onClick={() => handleRemoveItem(item)} className=" flex items-center justify-center underline">Remove</button>
                   </div>
                 </div>
                 <hr className='mt-2 mb-4' />
