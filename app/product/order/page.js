@@ -114,15 +114,15 @@ export default function Checkout() {
 
     // Prepare items array from cart
     const items = cartItems.map((product, index) => ({
-      item_name: product.product.title || "undefined",  
-      item_id: product.product.sku || "undefined",     
-      price: product.product.price || 0,               
-      item_brand: "",                                   
-      item_category: "",                                
-      item_variant: product.size || "",                 
-      quantity: product.quantity || 1,                 
-      currency: "BDT",                                  
-      index: index                                      
+      item_name: product.product.title || "undefined",
+      item_id: product.product.sku || "undefined",
+      price: product.product.price || 0,
+      item_brand: "",
+      item_category: "",
+      item_variant: product.size || "",
+      quantity: product.quantity || 1,
+      currency: "BDT",
+      index: index
     }));
     const totalValue = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
@@ -130,8 +130,8 @@ export default function Checkout() {
       event: "begin_checkout",
       ecommerce: {
         currency: "BDT",
-        value: totalValue,                    
-        items: items              
+        value: totalValue,
+        items: items
       }
     });
   }, []);
@@ -174,7 +174,12 @@ export default function Checkout() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    required className="grow" placeholder="Your Phone Number" />
+                    required
+                    className="grow"
+                    placeholder="Your Phone Number"
+                    pattern="\d{11}"
+                    title="Phone number must be exactly 11 digits"
+                  />
 
                 </label>
               </div>

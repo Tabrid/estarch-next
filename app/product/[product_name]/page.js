@@ -169,19 +169,37 @@ const ProductDetails = () => {
     const currentUrl = window.location.href;
     setUrl(currentUrl);
   }, []);
+  const toSentenceCase = (str) =>
+    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+
+  const cleanHtml = (html) => {
+  // Ensure 'html' is a valid string
+  if (!html) return '';
+
+  // Remove <style> tags and their content
+  const withoutStyle = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+
+  // Remove all other HTML tags
+  const withoutHtml = withoutStyle.replace(/<\/?[^>]+(>|$)/g, '');
+
+  // Trim extra whitespace, tabs, and newlines
+  return withoutHtml.replace(/\s+/g, ' ').trim();
+};
+  
   return (
     <>
       <head>
-        <meta property="og:title" content={product?.productName} />
+        <meta property="og:title" content={toSentenceCase(product?.productName || '')} />
         <meta
           property="og:description"
-          content={product?.content}
+          content={cleanHtml(product?.content)}
         />
         <meta property="og:url" content={url} />
         <meta property="og:image" content={`${baseUrl}/${product?.images[0]} `} />
         <meta property="product:availability" content="in stock" />
         <meta property="product:condition" content="new" />
-        <meta property="product:price:amount" content={`৳${product?.salePrice}`} />
+        <meta property="product:price:amount" content={`${product?.salePrice}`} />
         <meta property="product:price:currency" content="BDT" />
         <meta property="product:retailer_item_id" content={product?.SKU} />
       </head>
