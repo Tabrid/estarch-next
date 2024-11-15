@@ -166,8 +166,6 @@ export default function Checkout() {
         });
 
     }, [product, id, size, quantity]);
-
-
     return (
         <div className="container mx-auto py-10 px-4">
             <div className="flex flex-col md:flex-row gap-6">
@@ -206,6 +204,8 @@ export default function Checkout() {
                                     required
                                     className="grow"
                                     placeholder="Your Phone Number"
+                                    pattern="\d{11}" 
+                                    title="Phone number must be exactly 11 digits"
                                 />
                             </label>
                         </div>
@@ -268,9 +268,8 @@ export default function Checkout() {
                             <label className="block text-sm font-bold mb-2">Payment Method:</label>
                             <div className="mb-2">
                                 <label className="inline-flex space-x-3 items-center">
-
-                                    <input
-                                        className='radio checked:bg-blue-500'
+                                    {/* <input
+                                        className='radio checked:bg-red-500'
                                         type="radio"
                                         name="paymentMethod"
                                         value="Cash on Delivery"
@@ -279,8 +278,8 @@ export default function Checkout() {
                                         defaultChecked
                                     />
                                     <div className='flex items-center gap-3 ml-2'>
-                                        <Image src={cod} alt='Cash on delivery' width={80} height={40} />
-                                    </div>
+                                        <Image src={bkash} alt='bkash' width={80} height={40} />
+                                    </div> */}
                                     <input
                                         className='radio checked:bg-red-500'
                                         type="radio"
