@@ -197,9 +197,9 @@ const ProductDetails = () => {
                 className="object-cover"
               />
             ) : (
-              <p>Loading image...</p>
+              <span className="loading loading-bars loading-md"></span>
             )}
-            <div className="flex mt-2 gap-2">
+            <div className="flex mt-2 gap-2 flex-wrap">
               {product?.images && product?.images.map((img, index) => (
                 <Image
                   key={index}

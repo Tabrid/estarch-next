@@ -28,12 +28,13 @@ export default function Checkout() {
         orderNotes: '',
         paymentMethod: ''
     });
+
+
     useEffect(() => {
         const fetchProduct = async () => {
             try {
                 const response = await axios.get(`${baseUrl}/api/products/products/product/${id}`);
                 const fetchedProduct = response.data;
-                console.log(fetchedProduct);
 
                 setProduct(fetchedProduct);
             } catch (error) {
@@ -45,6 +46,9 @@ export default function Checkout() {
             fetchProduct();
         }
     }, [id]);
+
+    console.log(paymentMethod);
+
 
     const handleAreaChange = (e) => {
         const value = e.target.value;
@@ -64,6 +68,7 @@ export default function Checkout() {
         const subtotal = product.salePrice * quantity;
         return subtotal + (shippingCharge || 0);
     };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -87,7 +92,6 @@ export default function Checkout() {
         e.preventDefault();
         if (!product) return;
 
-
         const orderData = {
             name: formData.name,
             phone: formData.phone,
@@ -100,17 +104,27 @@ export default function Checkout() {
                 quantity: quantity,
                 size: size
             }],
-            paymentMethod: paymentMethod,
+            paymentMethod: formData.paymentMethod,
             userId: userId,
         };
 
-        try {
-            const response = await axios.post(`${baseUrl}/api/orders`, orderData);
-            // window.location.href = `/product/invoice/${response.data.order._id}`
-            window.location.href = `/orderStatus/${response.data.order._id}`
-        } catch (error) {
-            console.error('There was an error placing the order!', error);
+        if (formData.paymentMethod === "bkash") {
+            try {
+                const response = await axios.post(`${baseUrl}/bkash-checkout`, {amount:calculateTotal()});
+                window.location.href = `${response.data.bkashURL}`    
+            } catch (error) {
+                console.error('There was an error placing the order!', error);
+            }
+        } else {
+            try {
+                const response = await axios.post(`${baseUrl}/api/orders`, orderData);
+                // window.location.href = `/product/invoice/${response.data.order._id}`
+                window.location.href = `/orderStatus/${response.data.order._id}`
+            } catch (error) {
+                console.error('There was an error placing the order!', error);
+            }
         }
+
     };
     useEffect(() => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return;
@@ -151,7 +165,9 @@ export default function Checkout() {
             }
         });
 
-    }, [product ,id , size , quantity]);
+    }, [product, id, size, quantity]);
+
+
     return (
         <div className="container mx-auto py-10 px-4">
             <div className="flex flex-col md:flex-row gap-6">
@@ -252,20 +268,9 @@ export default function Checkout() {
                             <label className="block text-sm font-bold mb-2">Payment Method:</label>
                             <div className="mb-2">
                                 <label className="inline-flex space-x-3 items-center">
+
                                     <input
-                                        className='radio checked:bg-red-500'
-                                        type="radio"
-                                        name="paymentMethod"
-                                        value="bkash"
-                                        onChange={handleChange}
-                                        required
-                                        defaultChecked
-                                    />
-                                    <div className='flex items-center gap-3 ml-2'>
-                                        <Image src={bkash} alt='bkash' width={80} height={40} />
-                                    </div>
-                                    <input
-                                        className='radio checked:bg-red-500'
+                                        className='radio checked:bg-blue-500'
                                         type="radio"
                                         name="paymentMethod"
                                         value="Cash on Delivery"
@@ -275,6 +280,18 @@ export default function Checkout() {
                                     />
                                     <div className='flex items-center gap-3 ml-2'>
                                         <Image src={cod} alt='Cash on delivery' width={80} height={40} />
+                                    </div>
+                                    <input
+                                        className='radio checked:bg-red-500'
+                                        type="radio"
+                                        name="paymentMethod"
+                                        value="bkash"
+                                        onChange={handleChange}
+                                        required
+
+                                    />
+                                    <div className='flex items-center gap-3 ml-2'>
+                                        <Image src={bkash} alt='bkash' width={80} height={40} />
                                     </div>
                                 </label>
                             </div>
@@ -297,87 +314,6 @@ export default function Checkout() {
                     </form>
                 </div>
 
-                {/* <div className="w-full md:w-1/2 rounded-md mt-4 md:mt-0 p-4 lg:px-16 py-8 border shadow-lg">
-                    <h2 className="text-xl md:text-2xl font-bold mb-4 bg-gray-200 p-2 rounded text-center">Your order</h2>
-                    {product && (
-                        <>
-                            <div className="mb-4">
-                                <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-4 items-center">
-                                    <div className="lg:w-[610px] w-full flex   justify-between items-center md:gap-8">
-                                        <div className="flex items-center gap-4 md:gap-8">
-                                            <Image
-                                                src={product?.images[0]}
-                                                alt={product.productName}
-                                                width={50}
-                                                height={50}
-                                                objectFit="cover"
-                                                className="rounded"
-                                            />
-
-                                            <div className="flex flex-col gap-1  md:text-left">
-                                                <p className="whitespace-nowrap overflow-hidden text-ellipsis">
-                                                    {product.productName}
-                                                </p>
-                                                {size && (
-                                                    <p className="text-sm">Your Size: {size}</p>
-                                                )}
-                                                <div className="flex items-center gap-2 mt-1  md:justify-start">
-                                                    <span>Qty:</span>
-                                                    <button
-                                                        onClick={handleDecrease}
-                                                        className="bg-gray-300 w-6 h-6 flex items-center justify-center"
-                                                    >
-                                                        -
-                                                    </button>
-                                                    <span>{quantity}</span>
-                                                    <button
-                                                        onClick={handleIncrease}
-                                                        className="bg-gray-300 w-6 h-6 flex items-center justify-center"
-                                                    >
-                                                        +
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="w-48  mt-4 md:mt-0 md:ml-4   flex flex-col items-end lg:ml-20 ">
-                                            <div className="text-base lg:text-xl lg:font-semibold  flex ">
-                                                <div className="text-red-600 line-through text-sm lg:text-base flex  ">
-                                                    <p> ৳ </p><p>{product.regularPrice * quantity}</p>
-                                                </div>
-                                                <div className="ml-2 text-base lg:text-lg flex ">
-                                                    <p> ৳ </p><p>{product.salePrice * quantity}</p>
-                                                </div>
-                                            </div>
-                                            <span className="mt-2 md:mt-0">৳ {product?.discount?.amount * quantity}</span>
-                                            <button
-                                                onClick={handleRemoveItem}
-                                                className="mt-2 md:mt-4 text-sm underline"
-                                            >
-                                                Remove
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr />
-                            <div className="flex justify-between mt-2">
-                                <span>Subtotal</span>
-                                <span className="text-red-700">৳ {(product.salePrice * quantity).toFixed(2)}</span>
-                            </div>
-                            <hr className="my-2" />
-                            {shippingCharge !== null && (
-                                <div className="flex justify-between">
-                                    <span>Delivery Charge</span>
-                                    <span>৳ {shippingCharge}</span>
-                                </div>
-                            )}
-                            <div className="flex justify-between font-bold text-xl">
-                                <span>Total</span>
-                                <span className="text-red-700">৳ {calculateTotal().toFixed(2)}</span>
-                            </div>
-                        </>
-                    )}
-                </div> */}
 
                 {product && (
                     <div className="md:w-1/2 rounded-md mt-4 md:mt-0 p-4 lg:px-16 py-8 border shadow-lg">
