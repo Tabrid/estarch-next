@@ -17,6 +17,7 @@ export default function Checkout() {
   const [shippingCharge, setShippingCharge] = useState(null);
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
+  const [loading,setLoading] = useState(false)
 
 
   const [formData, setFormData] = useState({
@@ -78,6 +79,7 @@ export default function Checkout() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true)
     const orderData = {
       name: formData.name,
       phone: formData.phone,
@@ -103,6 +105,8 @@ export default function Checkout() {
     } catch (error) {
       console.error('There was an error placing the order!', error);
     }
+
+    setLoading(false)
   };
 
   useEffect(() => {
@@ -236,12 +240,20 @@ export default function Checkout() {
                 <p className='font-bold lg:text-xl border p-2'>Your Total Payable Amount: {calculateTotal().toFixed(2)} ৳</p>
               </div>
               <div className="flex justify-center">
-                <button
-                  type="submit"
-                  className="bg-black text-white px-6 py-3 rounded-lg hover:bg-orange-800 transition duration-200"
-                >
-                  Place Order
-                </button>
+                {
+                  loading ? <button
+                    type="submit"
+                    className="bg-black text-white px-6 py-3 rounded-lg hover:bg-orange-800 transition duration-200"
+                  >
+                    <span class="loading loading-spinner loading-sm"></span>
+                  </button> :
+                    <button
+                      type="submit"
+                      className="bg-black text-white px-6 py-3 rounded-lg hover:bg-orange-800 transition duration-200"
+                    >
+                      Place Order
+                    </button>
+                }
               </div>
             </div>
           </form>

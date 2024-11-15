@@ -10,6 +10,7 @@ import bkash from '../../../../../public/images/bkash.png';
 import { AuthContext } from '@/components/context/AuthProvider';
 
 export default function Checkout() {
+    const [loading, setLoading] = useState(false)
     const newQuantity = useSearchParams()
     const q = newQuantity.get('q')
     const [product, setProduct] = useState(null);
@@ -90,6 +91,7 @@ export default function Checkout() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true)
         if (!product) return;
 
         const orderData = {
@@ -110,8 +112,8 @@ export default function Checkout() {
 
         if (formData.paymentMethod === "bkash") {
             try {
-                const response = await axios.post(`${baseUrl}/bkash-checkout`, {amount:calculateTotal()});
-                window.location.href = `${response.data.bkashURL}`    
+                const response = await axios.post(`${baseUrl}/bkash-checkout`, { amount: calculateTotal() });
+                window.location.href = `${response.data.bkashURL}`
             } catch (error) {
                 console.error('There was an error placing the order!', error);
             }
@@ -125,6 +127,7 @@ export default function Checkout() {
             }
         }
 
+        setLoading(false)
     };
     useEffect(() => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return;
@@ -204,7 +207,7 @@ export default function Checkout() {
                                     required
                                     className="grow"
                                     placeholder="Your Phone Number"
-                                    pattern="\d{11}" 
+                                    pattern="\d{11}"
                                     title="Phone number must be exactly 11 digits"
                                 />
                             </label>
@@ -267,30 +270,11 @@ export default function Checkout() {
                         <div className="mb-4">
                             <label className="block text-sm font-bold mb-2">Payment Method:</label>
                             <div className="mb-2">
-                                <label className="inline-flex space-x-3 items-center">
-                                    {/* <input
-                                        className='radio checked:bg-red-500'
-                                        type="radio"
-                                        name="paymentMethod"
-                                        value="Cash on Delivery"
-                                        onChange={handleChange}
-                                        required
-                                        defaultChecked
-                                    />
+                                <label className="inline-flex items-center">
+                                    <input className='radio checked:bg-red-500' defaultChecked type="radio" name="paymentMethod" value="Cash on Delivery" onChange={handleChange} required />
                                     <div className='flex items-center gap-3 ml-2'>
-                                        <Image src={bkash} alt='bkash' width={80} height={40} />
-                                    </div> */}
-                                    <input
-                                        className='radio checked:bg-red-500'
-                                        type="radio"
-                                        name="paymentMethod"
-                                        value="bkash"
-                                        onChange={handleChange}
-                                        required
-
-                                    />
-                                    <div className='flex items-center gap-3 ml-2'>
-                                        <Image src={bkash} alt='bkash' width={80} height={40} />
+                                        <span>Cash on delivery</span>
+                                        <Image src={cod} alt='Cash on delivery' width={80} height={40} />
                                     </div>
                                 </label>
                             </div>
@@ -303,12 +287,20 @@ export default function Checkout() {
                         </div>
 
                         <div className="flex justify-center">
-                            <button
-                                type="submit"
-                                className="bg-black text-white px-6 py-3 rounded-lg hover:bg-orange-800 transition duration-200"
-                            >
-                                Place Order
-                            </button>
+                            {
+                                loading ? <button
+                                    type="submit"
+                                    className="bg-black text-white px-6 py-3 rounded-lg hover:bg-orange-800 transition duration-200"
+                                >
+                                   <span class="loading loading-spinner loading-sm"></span>
+                                </button> :
+                                    <button
+                                        type="submit"
+                                        className="bg-black text-white px-6 py-3 rounded-lg hover:bg-orange-800 transition duration-200"
+                                    >
+                                        Place Order
+                                    </button>
+                            }
                         </div>
                     </form>
                 </div>
